@@ -3,7 +3,7 @@ import { Observable, of, Subject  } from 'rxjs';
 import { catchError, finalize, map, filter, withLatestFrom, flatMap  } from 'rxjs/operators';
 
 import { ArtworkService } from 'src/app/core/services/artwork/artwork.service';
-import { IArtWork } from 'src/app/core/interfaces/iart-work';
+import { IArtWork, IData } from 'src/app/core/interfaces/iart-work';
 
 @Component({
   selector: 'app-artwork-list',
@@ -14,7 +14,8 @@ export class ArtworkListComponent implements OnInit {
 
   loading = false;
   errorMsg?: string;
-  artworks$?: Observable<IArtWork>;
+  artworks$?: Observable<IData[]>;
+  iiifUrl: string = "";
   filterAndSortArtWorks$?: Observable<IArtWork>;
 
   count: number = 1;
@@ -51,11 +52,13 @@ export class ArtworkListComponent implements OnInit {
                       .pipe(   
                         map(response => {
 
+                          this.iiifUrl = response.config.iiif_url
+
                           this.count = response.pagination.total_pages;
                           this.page = response.pagination.current_page;
                           this.perPage = response.pagination.limit;
 
-                          return response;
+                          return response.data;
                         }),
                         catchError(error => {
                           this.errorMsg = error.message;

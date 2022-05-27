@@ -9,7 +9,7 @@ import { IData } from 'src/app/core/interfaces/iart-work';
 export class ArtworkCardComponent implements OnInit {
 
   @Input() artwork!: IData;
-  @Input() iiifUrl!: String;
+  @Input() iiifUrl!: string;
 
   constructor() { }
 
