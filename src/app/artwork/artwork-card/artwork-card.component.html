@@ -1,0 +1,31 @@
+<nx-card class="nx-margin-y-s">
+    <figure nxFigure>       
+        <img 
+            *ngIf="artwork.image_id; else imgPlaceholder"
+            class="image" 
+            [src]="iiifUrl + '/' + artwork.image_id + '/full/843,/0/default.jpg'" 
+            [title]="artwork.title"
+            [alt]="artwork.title" />
+        <ng-template #imgPlaceholder>
+            <img                 
+                class="image" 
+                src="assets/logos/Art_Institute_of_Chicago_logo.svg" 
+                title="Art_Institute_of_Chicago_logo"
+                alt="Art_Institute_of_Chicago_logo" />
+        </ng-template>   
+    </figure>
+    
+    <h3>{{artwork.title}}</h3>
+    <h4>{{artwork.artist_title}}</h4>
+    
+
+    <p *ngIf="!artwork.date_start && !artwork.date_end; else dateInfo">{{artwork.place_of_origin}}</p>
+    <ng-template #dateInfo>
+        <p *ngIf="artwork.date_start == artwork.date_end; else dateInfoStartAndEnd">{{artwork.place_of_origin}} ({{artwork.date_start}})</p>
+        <ng-template #dateInfoStartAndEnd>
+            <p>{{artwork.place_of_origin}} ({{artwork.date_start}} {{artwork.date_end}})</p>
+        </ng-template>
+    </ng-template>
+
+    <p>{{artwork.medium_display}}</p>
+</nx-card>
