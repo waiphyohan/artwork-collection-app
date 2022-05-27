@@ -13,6 +13,7 @@ import { IArtWork } from 'src/app/core/interfaces/iart-work';
 export class ArtworkListComponent implements OnInit {
 
   loading = false;
+  errorMsg?: string;
   artworks$?: Observable<IArtWork>;
   filterAndSortArtWorks$?: Observable<IArtWork>;
 
@@ -44,21 +45,24 @@ export class ArtworkListComponent implements OnInit {
   }
 
   getArtWorks() {
-    this.artworks$ = this.artWorkService.getArtWork(this.page);
-    // this.filterAndSortArtWorks$ = this.artworks$;
+    this.loading = true;
 
-    // this.artworks$.pipe(map(data => {
-    //   console.log(data.pagination)
-    //   this.count = data.pagination.total_pages;
-    //   this.page = data.pagination.current_page;
-    //   this.perPage = data.pagination.limit;
-    // })).subscribe();
+    this.artworks$ = this.artWorkService.getArtWork(this.page)
+                      .pipe(   
+                        map(response => {
 
-    // this.artworks$.subscribe(data => {
-    //   this.count = data.pagination.total_pages;
-    //   this.page = data.pagination.current_page;
-    //   this.perPage = data.pagination.limit;
-    // })
+                          this.count = response.pagination.total_pages;
+                          this.page = response.pagination.current_page;
+                          this.perPage = response.pagination.limit;
+
+                          return response;
+                        }),
+                        catchError(error => {
+                          this.errorMsg = error.message;
+                          return of([]);
+                        }),
+                        finalize(()=>this.loading=false)
+                      )
   }
 
 }
