@@ -1,3 +1,24 @@
+
+
+<form [formGroup]="artForm" class="nx-margin-y-m">
+  <div nxLayout="grid">
+    <div nxRow>
+      <div nxCol="12,12,6">
+
+      </div>
+      <div nxCol="12,12,6">
+        <nx-formfield nxLabel="Sort by:">
+          <nx-dropdown 
+            formControlName="sortControl" 
+            [options]="sortOptions"
+            (selectionChange)="onChangeSortOptions()"
+          ></nx-dropdown>
+        </nx-formfield>
+      </div>
+    </div>
+  </div>
+</form>
+
 <div nxLayout="grid" >  
     <div nxRow *ngIf="filterAndSortArtWorks$ | async as artworks">    
         <div nxCol="3" *ngFor="let artwork of artworks">

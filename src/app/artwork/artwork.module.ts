@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NxHeadlineModule } from '@aposin/ng-aquila/headline'
 import { NxFormfieldModule } from '@aposin/ng-aquila/formfield';
@@ -31,6 +31,7 @@ import { ArtworkFormComponent } from './artwork-form/artwork-form.component';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     ArtworkRoutingModule,
     NxHeadlineModule,
