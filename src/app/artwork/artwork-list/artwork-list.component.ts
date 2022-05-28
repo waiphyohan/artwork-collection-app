@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, Subject  } from 'rxjs';
-import { catchError, finalize, map, filter, withLatestFrom, flatMap  } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, map  } from 'rxjs/operators';
+import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 
 import { ArtworkService } from 'src/app/core/services/artwork/artwork.service';
 import { IArtWork, IData } from 'src/app/core/interfaces/iart-work';
@@ -16,27 +17,17 @@ export class ArtworkListComponent implements OnInit {
   errorMsg?: string;
   artworks$?: Observable<IData[]>;
   iiifUrl: string = "";
-  filterAndSortArtWorks$?: Observable<IArtWork>;
+  filterAndSortArtWorks$?:  Observable<IData[]>;
 
   count: number = 1;
   page: number = 1;
   perPage: number = 12;
 
-  prevPage() {
-    this.page--;
-    this.getArtWorks();
-  }
-
-  nextPage() {
-    this.page++;
-    this.getArtWorks();
-  }
-
-  goToPage(n: number) {
-    this.page = n;
-    this.getArtWorks();
-  }
-
+  artForm: FormGroup = new FormGroup({
+    filterControl: new FormControl(),
+    sortControl: new FormControl()
+  });
+  
   constructor(
     private artWorkService: ArtworkService
   ) { }
@@ -65,7 +56,47 @@ export class ArtworkListComponent implements OnInit {
                           return of([]);
                         }),
                         finalize(()=>this.loading=false)
-                      )
+                      );
+
+    this.filterAndSortArtWorks$ = this.artworks$.pipe(
+      map(data => {        
+        return this.sortArr(data, 'title');
+      })
+    );
+
+    
+  }  
+
+  sortArr(data: any, sortKey: string): IData[] {
+    // put `null` values at the end of the array
+    return [...data].sort((a, b) => {
+
+      if (!a[sortKey] ) {
+        return +1;
+      }
+
+      if (!b[sortKey]) {
+        return -1;
+      }
+
+      return a[sortKey].localeCompare(b[sortKey])
+
+    })
   }
+
+  prevPage() {
+    this.page--;
+    this.getArtWorks();
+  }
+
+  nextPage() {
+    this.page++;
+    this.getArtWorks();
+  }
+
+  goToPage(n: number) {
+    this.page = n;
+    this.getArtWorks();
+  }  
 
 }

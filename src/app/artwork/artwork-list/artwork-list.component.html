@@ -1,5 +1,5 @@
 <div nxLayout="grid" >  
-    <div nxRow *ngIf="artworks$ | async as artworks">    
+    <div nxRow *ngIf="filterAndSortArtWorks$ | async as artworks">    
         <div nxCol="3" *ngFor="let artwork of artworks">
             <app-artwork-card [artwork]="artwork" [iiifUrl]="iiifUrl"></app-artwork-card>
         </div>        
