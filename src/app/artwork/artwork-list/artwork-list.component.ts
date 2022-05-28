@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms"
 import { ArtworkService } from 'src/app/core/services/artwork/artwork.service';
 import { IData } from 'src/app/core/interfaces/iart-work';
 import { IDropdownOption } from 'src/app/core/interfaces/idropdown-option';
+import { IFilterOption } from 'src/app/core/interfaces/ifilter-option';
 
 @Component({
   selector: 'app-artwork-list',
@@ -14,8 +15,7 @@ import { IDropdownOption } from 'src/app/core/interfaces/idropdown-option';
 })
 export class ArtworkListComponent implements OnInit {
 
-  loading = false;
-  errorMsg?: string;
+  
   artworks$?: Observable<IData[]>;
   iiifUrl: string = '';
   filterAndSortArtWorks$?:  Observable<IData[]>;
@@ -23,6 +23,8 @@ export class ArtworkListComponent implements OnInit {
   count: number = 1;
   page: number = 1;
   perPage: number = 12;
+
+  filterOptions: IFilterOption[] = []
 
   sortOptions: IDropdownOption[] = [
     {key: '', value: 'Recommendation'}, 
@@ -42,10 +44,10 @@ export class ArtworkListComponent implements OnInit {
     private artWorkService: ArtworkService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
 
     this.artForm = this.formBuilder.group({
-      filterControl: ['Name', [Validators.required]],
+      filterControl: [''],
       sortControl: ['Recommendation']
     });
 
@@ -53,9 +55,7 @@ export class ArtworkListComponent implements OnInit {
   }  
 
   getArtWorks() {
-    this.loading = true;
-
-    console.log('getArtWorks')
+    
 
     this.artworks$ = this.artWorkService.getArtWork(this.page)
                       .pipe(   
@@ -65,15 +65,15 @@ export class ArtworkListComponent implements OnInit {
 
                           this.count = response.pagination.total_pages;
                           this.page = response.pagination.current_page;
-                          this.perPage = response.pagination.limit;
+                          this.perPage = response.pagination.limit;                          
+
+                          this.filterOptions = this.getFilterOptins(response.data);                        
 
                           return response.data;
                         }),
-                        catchError(error => {
-                          this.errorMsg = error.message;
+                        catchError(error => {                          
                           return of([]);
-                        }),
-                        finalize(()=>this.loading=false)
+                        })                        
                       );
 
     this.filterAndSortArtWorks$ = this.artworks$.pipe(
@@ -126,6 +126,24 @@ export class ArtworkListComponent implements OnInit {
     this.getArtWorks();
   } 
 
+  getFilterOptins(data: IData[]): IFilterOption[] {
+    const arr: IFilterOption[] = []
+    data.forEach((item: IData) => {
+      console.log(item.style_titles);
+      if (item.style_titles) {
+        item.style_titles.forEach((str: string) => {
+          const index = arr.findIndex(x => x.value == str)
+          if (index === -1) {
+            arr.push({ count: 1, value: str })
+          } else {
+            arr[index].count++;
+          }
+        }) 
+      }
+    })
+    return arr;
+  }
+
   getSortOptionKey() {
     return this.sortOptions.filter(option => option.value == this.artForm.value.sortControl)[0];
   }
@@ -138,6 +156,15 @@ export class ArtworkListComponent implements OnInit {
         return this.sortArr(data, option.key);
       })
     );
+  }
+
+  onChangeFilterOptions() {
+    console.log('onChangeFilterOptions')
+    console.log(this.artForm.value.filterControl, 'abcdefg')
+  }
+
+  selectLabel(option: IFilterOption): string {
+    return `${option.value} (${option.count})`;
   }
 
 }

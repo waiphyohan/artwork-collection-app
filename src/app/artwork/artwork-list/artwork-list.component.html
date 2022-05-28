@@ -1,45 +1,67 @@
+<div class="wrapper" *ngIf="filterAndSortArtWorks$ | async as artworks; else loading">  
 
-
-<form [formGroup]="artForm" class="nx-margin-y-m">
-  <div nxLayout="grid">
-    <div nxRow>
-      <div nxCol="12,12,6">
-
-      </div>
-      <div nxCol="12,12,6">
-        <nx-formfield nxLabel="Sort by:">
-          <nx-dropdown 
-            formControlName="sortControl" 
-            [options]="sortOptions"
-            (selectionChange)="onChangeSortOptions()"
-          ></nx-dropdown>
+  <form [formGroup]="artForm" class="nx-margin-y-m">
+    <div nxLayout="grid">
+      <div nxRow>
+        <div nxCol="12,12,6">
+          <nx-formfield nxLabel="Filter:">
+            <nx-multi-select 
+              formControlName="filterControl" 
+              placeholder="Style"
+              [options]="filterOptions"
+              (selectionChange)="onChangeFilterOptions()"
+              [selectLabel]="selectLabel"
+              selectValue="value"
+            >
+          </nx-multi-select>
         </nx-formfield>
+        </div>
+        <div nxCol="12,12,6">
+          <nx-formfield nxLabel="Sort by:">
+            <nx-dropdown 
+              formControlName="sortControl" 
+              [options]="sortOptions"
+              (selectionChange)="onChangeSortOptions()"
+            ></nx-dropdown>
+          </nx-formfield>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div nxLayout="grid" class="nx-margin-y-m">  
+      <div nxRow >    
+          <div nxCol="12,12,6,4,3" *ngFor="let artwork of artworks">
+              <app-artwork-card [artwork]="artwork" [iiifUrl]="iiifUrl"></app-artwork-card>
+          </div>        
+      </div>
+  </div>
+
+  <div nxLayout="grid" class="nx-margin-y-m">
+      <div nxRow>
+        <div nxCol="4" nxColOffset="4">
+          <nx-pagination
+            [nxCount]="count"
+            [nxPage]="page"
+            [nxPerPage]="perPage"
+            nxType="advanced"
+            (nxGoPrev)="prevPage()"
+            (nxGoNext)="nextPage()"
+            (nxGoPage)="goToPage($event)"
+          >
+          </nx-pagination>
+        </div>
+      </div>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <div nxLayout="grid" class="nx-margin-y-m">
+    <div nxRow>
+      <div nxCol="1" nxColOffset="6">
+        <nx-spinner nxSize="large"></nx-spinner>
       </div>
     </div>
   </div>
-</form>
-
-<div nxLayout="grid" >  
-    <div nxRow *ngIf="filterAndSortArtWorks$ | async as artworks">    
-        <div nxCol="3" *ngFor="let artwork of artworks">
-            <app-artwork-card [artwork]="artwork" [iiifUrl]="iiifUrl"></app-artwork-card>
-        </div>        
-    </div>
-</div>
-
-<div nxLayout="grid" class="nx-margin-y-m">
-    <div nxRow>
-      <div nxCol="4" nxColOffset="4">
-        <nx-pagination
-          [nxCount]="count"
-          [nxPage]="page"
-          [nxPerPage]="perPage"
-          nxType="advanced"
-          (nxGoPrev)="prevPage()"
-          (nxGoNext)="nextPage()"
-          (nxGoPage)="goToPage($event)"
-        >
-        </nx-pagination>
-      </div>
-    </div>
-</div>
+</ng-template>

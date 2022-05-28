@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { NxHeaderModule } from '@aposin/ng-aquila/header';
 import { NxLinkModule } from '@aposin/ng-aquila/link';
@@ -18,6 +19,7 @@ import { FooterComponent } from './core/components/footer/footer/footer.componen
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     NxHeaderModule,    

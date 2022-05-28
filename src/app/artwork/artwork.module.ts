@@ -18,7 +18,6 @@ import { ArtworkComponent } from './artwork.component';
 import { ArtworkHeaderComponent } from './artwork-header/artwork-header.component';
 import { ArtworkListComponent } from './artwork-list/artwork-list.component';
 import { ArtworkCardComponent } from './artwork-card/artwork-card.component';
-import { ArtworkFormComponent } from './artwork-form/artwork-form.component';
 
 
 @NgModule({
@@ -26,8 +25,7 @@ import { ArtworkFormComponent } from './artwork-form/artwork-form.component';
     ArtworkComponent,
     ArtworkHeaderComponent,
     ArtworkListComponent,
-    ArtworkCardComponent,
-    ArtworkFormComponent
+    ArtworkCardComponent
   ],
   imports: [
     CommonModule,
